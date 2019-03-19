@@ -5,3 +5,4 @@
 .vscode
 celerybeat-schedule
 .ipynb_checkpoints
+*$py.class
