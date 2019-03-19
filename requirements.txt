@@ -1,0 +1,8 @@
+Flask
+dlib
+face_recognition
+icecola==0.4
+Flask-Script==2.0.6
+Faker
+python-dotenv
+pymysql

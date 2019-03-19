@@ -1,0 +1,5 @@
+[flake8]
+max-line-length = 120
+# F821 undefined name 'FileNotFoundError'
+# F812 list comprehension redefines 'video' from line 41
+ignore = F821 F812

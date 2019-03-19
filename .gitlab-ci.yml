@@ -1,0 +1,56 @@
+stages:
+- test
+- deploy
+
+variables:
+  MYSQL_DATABASE: athena_test
+  MYSQL_ROOT_PASSWORD: newpass
+  PIP_CACHE_DIR: "/root/.cache/pip/"
+  IMAGE: fjl2401/${CI_PROJECT_NAME}
+  FLASK_ENV: testing
+before_script:
+- IMAGE_TAG=${IMAGE}:${CI_COMMIT_SHA:0:8}
+
+cache:
+  key: ${CI_JOB_NAME}
+  paths:
+  - ${PIP_CACHE_DIR}
+
+# 直接deploy的时候build
+#build_image:
+#  stage: build_image
+#  tags:
+#  - build_image
+#  script:
+#  - docker build -t ${IMAGE_TAG} -f athena .
+#  - docker login -u "$REGISTRY_USERNAME" --password "$REGISTRY_PASSWORD"
+#  - docker push ${IMAGE_TAG}
+
+test:
+  stage: test
+  image: python:3.6.7
+  services:
+  - name: mysql:5.6
+    alias: mysql
+  - name: redis:4
+    alias: redis
+  before_script:
+  - python -V
+  script:
+  - pip install -U -r requirements.txt
+  - flake8 app db jobs tests
+  - pytest -s -x
+
+deploy:
+  when: manual
+  stage: deploy
+  #  连接到 ssh服务器 更新代码 重新build image 然后docker-compose 重新启动
+  before_script:
+  - mkdir -p ~/.ssh
+  - echo "$DEPLOY_SERVER_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - eval "$(ssh-agent -s)"
+  - ssh-add ~/.ssh/id_rsa
+  - ssh-keyscan -H '111.231.82.45' >> ~/.ssh/known_hosts
+  script:
+  - ./boot.sh deploy
