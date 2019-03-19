@@ -1,8 +1,8 @@
 .idea
-.pytest_cache/
-.env
+__pycache__/
 .Ds_store
 .vscode
 celerybeat-schedule
 .ipynb_checkpoints
 *$py.class
+.env
