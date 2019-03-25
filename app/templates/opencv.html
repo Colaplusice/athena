@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+   <video id="video" width="640" height="480" autoplay></video>
+    <button id="snap">Snap Photo</button>
+    <button id="upload">upload</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+</body>
+<script src="../static/js/jquery.min.js"></script>
+
+<script>
+    // Grab elements, create settings, etc.
+    var video = document.getElementById('video');
+    // Get access to the camera!
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        // Not adding `{ audio: true }` since we only want video now
+        navigator.mediaDevices.getUserMedia({
+            video: true
+        }).then(function (stream) {
+            //video.src = window.URL.createObjectURL(stream);
+            video.srcObject = stream;
+            video.play();
+        });
+    }
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext("2d");
+    var video = document.getElementById("video");
+
+    document.getElementById("snap").addEventListener(
+        "click",
+        function () {
+           context.drawImage(video, 0, 0, 640, 480);
+        }
+    );
+
+</script>
+
+<script>
+
+    $(function () {
+           $('#upload').click(function () {
+    // Generate the image data
+        alert("upload");
+    var Pic = document.getElementById("myCanvas").toDataURL("image/png");
+    Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
+    // Sending the image data to Server
+    $.ajax({
+        type: 'POST',
+        url: '/receive_image',
+        data: '{ "imageData" : "' + Pic + '" }',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function (msg) {
+            alert("Done, Picture Uploaded.");
+        }
+    });
+    });
+    })
+</script>
+</html>

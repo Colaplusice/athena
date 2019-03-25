@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="page-wrapper bg-dark p-t-100 p-b-50">
+        <div class="wrapper wrapper--w900">
+            <div class="card card-6">
+                <div class="card-heading">
+                    <h2 class="title">login</h2>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for("main.login") }}" method="POST">
+                        <div class="form-row">
+                            <div class="name">Username</div>
+                            <div class="value">
+                                <input class="input--style-6" type="text" name="username">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="name">Password</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    <input class="input--style-6" type="password" name="password"
+                                           placeholder="enter your password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="name">remember me</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    <input class="custom-checkbox" id="remember" type="checkbox" name="remember">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn--radius-2 btn--blue-2" type="submit">login</button>
+                            <a href="{{ url_for("main.register") }}" class="btn btn--radius-2 btn--blue-2 float-right">register</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Jquery JS-->
+    {% block script %}
+        {{ super() }}
+        <script src="../static/js/register.js"></script>
+    {% endblock %}
+{% endblock %}

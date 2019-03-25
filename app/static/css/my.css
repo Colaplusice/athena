@@ -1,0 +1,19 @@
+body{
+    background: #e2e3e5;
+}
+.video-content{
+    margin-top: 30px;
+}
+.video-button button{
+margin-top: 20px;
+    margin-bottom: 15px;
+}
+#message button{
+    color: black;
+    margin-left: 20px;
+    width: 200px;
+}
+
+#remember{
+    margin-top: 15px;
+}

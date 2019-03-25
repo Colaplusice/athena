@@ -5,4 +5,5 @@ icecola==0.4
 Flask-Script==2.0.6
 Faker
 python-dotenv
-pymysql
+psycopg2-binary
+Flask-Login
