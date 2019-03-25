@@ -6,3 +6,5 @@ celerybeat-schedule
 .ipynb_checkpoints
 *$py.class
 .env
+media/
+records/
