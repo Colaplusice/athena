@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block css %}
+<style>
+    .recognize-upload button {
+        padding: 10px;
+        height: 50px;
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .page-title {
+        margin-top: 20px;
+    }
+
+
+    .recognize-upload form {
+        width: 100% !important;
+    }
+
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="container">
+    <h2 class="page-title" style="text-align: center">添加照片</h2>
+    <div class="video-content">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="img-fluid">
+                        <video class="mb-4" id="video" width="480" height="400" autoplay></video>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <button class="btn btn-primary btn-block" id="snap">拍照上传</button>
+                    </div>
+                    <div class="col-8">
+                        <form action="/add_database" method="post" class="form-inline js-input-file" id="upload-image-file">
+                            <input class="input-file" type="file" name="image" id="file">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="btn btn-info btn-block" id="upload-file" for="file">文件上传</label>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="input-file-info" for="file">未选择文件上传</label>
+                                </div>
+                                {#                                <div class="col-md-4">#}
+                                {#                                    <button class="btn btn-info btn-block">提交</button>#}
+                                {#                                </div>#}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-12 offset-1">
+                <div class="img-fluid" id="canvas-img">
+                    <canvas id="canvas" width="480" height="400" name="snapshot" class="mb-0"></canvas>
+                </div>
+                <button class="btn btn-primary"
+                        style="display: none; text-align: center; margin-left: auto; margin-right: auto; margin-top: 30px;"
+                        id="upload_image">添加
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 video-button">
+                <div id="message">
+                    <div id="video_message_p"></div>
+                    <p id="reco_label"></p>
+                    <div class="modal fade" id="reco_result" tabindex="-1" role="dialog"
+                         aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block script %}
+<script src="{{ static_url("js/underscore.js") }}"></script>
+<script src="{{ static_url("js/backbone.js") }}"></script>
+{#<script src="{{ static_url("js/image_backbone.js") }}"></script>#}
+<script>
+    {#        ajax 上传文件 #}
+    $('#upload-image-file').submit(function (e) {
+        e.preventDefault();
+        var form_data = new FormData(this);
+        $.ajax({
+            type: "POST",
+            url: '/add_database',
+            data: form_data,
+            cache: false,
+            contentType: false,
+            processData: false,
+        }).done(function (code, message) {
+            alert("上传成功!")
+        }).fail(function (error, message) {
+            alert(error);
+            console.log(message);
+        });
+     });
+    {#当文件添加进来时#}
+    $('.input-file').change(function () {
+        var fileName;
+        fileName = $(this).val();
+        var info = $(".input-file-info");
+        if (fileName.substring(3, 11) == 'fakepath') {
+            fileName = fileName.substring(12);
+        }
+        if (fileName == "") {
+            info.text("没有文件选中");
+        } else {
+            info.text(fileName);
+        }
+        $('#upload-image-file').submit();
+    });
+
+
+    $('#upload_image').click(function () {
+        var Pic = document.getElementById("canvas").toDataURL("image/png");
+        Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
+        let data = Pic;
+        let full_data = {
+            'data': data,
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/add_database',
+            data: JSON.stringify(full_data),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+        }).done(function (data, message) {
+            alert("添加成功");
+            {#    完成上传 #}
+            $('#upload_image').hide();
+        }).fail(function (data, message) {
+            console.log(data);
+            console.log(message);
+        });
+    });
+
+    function snap() {
+        {# 初始化canvas #}
+        $('#canvas-img').html('<canvas id="canvas" width="480" height="400"' +
+            ' name="snapshot" class="mb-0"></canvas>\n');
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        var video = document.getElementById("video");
+        context.drawImage(video, 0, 0, video.width, video.height);
+        $('#upload_image').show();
+    }
+
+    function client_camera() {
+        // Grab elements, create settings, etc.
+        var video = document.getElementById('video');
+        // Get access to the camera!
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Not adding `{ audio: true }` since we only want video now
+            navigator.mediaDevices.getUserMedia({
+                video: true
+            }).then(function (stream) {
+                //video.src = window.URL.createObjectURL(stream);
+                video.srcObject = stream;
+                video.play();
+            });
+        }
+    }
+
+    client_camera();
+    $('#snap').click(snap);
+
+</script>
+{% end %}
+{% block template %}
+{% end %}

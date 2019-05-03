@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+{% block css %}
+<style>
+    .recognize-upload button {
+        padding: 10px;
+        height: 50px;
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .recognize-upload form {
+        width: 100% !important;
+    }
+
+    .input-files:focus + label,
+    .input-files + label:hover {
+        background: #1b1b1b;
+    }
+
+    .feature-title {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    {# waitting modal#}
+    .bd-example-modal-lg .modal-dialog {
+        display: table;
+        position: relative;
+        margin: 0 auto;
+        top: calc(50% - 24px);
+    }
+
+    .bd-example-modal-lg .modal-dialog .modal-content {
+        background-color: transparent;
+        border: none;
+    }
+
+
+    .gallery {
+        margin-bottom: 50px;
+
+    }
+
+    .carousel-control-prev, .carousel-control-next {
+        width: 100%;
+
+    }
+
+    .image-reco {
+        background-color: white;
+        padding: 10px;
+        color: #ff8c00;
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .image-reco {
+        height: 320px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .image-reco input {
+        max-height: 250px;
+    }
+
+    .image-reco a {
+        color: #ff8c00;
+        text-decoration: none;
+    }
+
+    .image-reco a:hover {
+        color: #58aeff;
+    }
+
+    .feature-introduce {
+        margin-top: 30px;
+    }
+</style>
+{% end %}
+
+{# modal #}
+{% block modal %}
+
+<div class="modal fade" id="reco_modal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">识别结果</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-sex"> 性别: </p>
+                <p id="modal-age"> 年龄: </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="login-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">login</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" action="{{ reverse_url("index") }}">
+                <div class="modal-body mx-3">
+                    <div class="md-form mb-5">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" id="defaultForm-username" class="form-control validate">
+                        <label data-error="wrong" data-success="right" for="defaultForm-email">Your username</label>
+                    </div>
+                    <div class="md-form mb-4">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" id="defaultForm-pass" class="form-control validate">
+                        <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-center">
+                    <button type="submit" class="btn btn-default">登录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# waiting modal #}
+<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     id="waiting-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" style="width: 48px">
+            <span class="fa fa-spinner fa-spin fa-3x"></span>
+        </div>
+    </div>
+</div>
+
+{# add photo modal  #}
+
+<div class="modal" id="add-photo-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-dark">
+                    添加你的照片
+                </h3>
+            </div>
+            <form id="add-people-form" action="/add_people" method="post"
+                  enctype="multipart/form-data" class="form-input-file">
+                <div class="modal-body">
+                    <div class="md-form mb-4">
+                        <label for="add-image" class="btn btn-info btn-block">请选择照片</label>
+                        <input type="file" class="input-file" id="add-image" name="image">
+                        <label for="add-image" class="input-file-info label-info text-dark">还未选择文件</label>
+                    </div>
+
+                    <div class="md-form">
+                        <label for="image-name" class="text-black-50">请输入姓名</label>
+                        <input type="text" class="form-control" checked id="image-name" name="username">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button class="btn btn-block btn--red mr-auto" data-dismiss="modal">关闭</button>
+
+                            </div>
+                            <div class="col-md-4 offset-4">
+                                <button class="btn btn-block btn--red" type="submit">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+{% end %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-6 offset-3">
+            <h2 class="feature-title">让我猜下你是谁</h2>
+        </div>
+    </div>
+</div>
+
+<div class="feature-title" id="index-view">
+    <div class="gallery">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-1">
+                    <a class="bg-red carousel-control-prev" href="#bs4-multi-slide-carousel" data-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </a>
+
+                </div>
+                <div class="col-md-10">
+                    <div id="bs4-multi-slide-carousel" class="carousel slide">
+                        <div class="carousel-inner">
+                            {% for group in image_list %}
+                            <div class="carousel-item active">
+                                <div class="row">
+                                    {% for each_image in group %}
+                                    <div class="col">
+                                        <form action="/recognize" method="post" enctype="multipart/form-data"
+                                              class="form-input-file form-submit-file">
+                                            <div class="image-reco">
+                                                <input alt="demo picture" type="image" src="{{ ( each_image ) }}" class="img-fluid" name="image">
+                                                <input type="text" name="image_name" value="{{ each_image }}" class="d-none">
+                                                <button type="submit" class="btn btn--red">使用这张照片</button>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                    {% end %}
+                                </div>
+                            </div>
+                            {% end %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <a class="bg-red carousel-control-next" href="#bs4-multi-slide-carousel" data-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="video-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 offset-5">
+                    <div class="row mb-3 mr-0">
+                        <h4 style="margin-left: -20px"> 请选择一张照片</h4>
+                    </div>
+                    <div class="row mb-2">
+                        <form action="/recognize" class="form-inline form-input-file form-submit-file" id="select-image-recognize"
+                              enctype="multipart/form-data">
+                            <input class="input-file" type="file" name="image" id="file">
+                            <label class="btn btn-info btn-block input-file-info" id="reco-file"
+                                   for="file">选择图片检测</label>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <label class="btn  btn--red" id="add-file">添加你的照片</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row feature-introduce">
+                <div class="col-md-7 offset-3">
+                    <p>
+                        添加一张自己的照片进入数据库中，然后就可以从人群中找到你~
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="show-template" class="d-none"></button>
+</div>
+{#end content#}
+
+{% end %}
+{# ugly code for trigger backbone #}
+{% block underscore_template %}
+<script type="text/template" id="image-template">
+    <div class="recognize-photo">
+        <div class="container">
+            <div class="row">
+                <div class="offset-3">
+                    <img src="<%= image %> " alt="">
+                    <p class="offset-2 mt-4"> Sorry if we didn’t quite get it right - we are still improving this
+                        feature..
+                    </p>
+                    <a href="/" class="col-md-3 offset-4 btn btn--red">试试其他照片</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+{% end %}
+{% block script %}
+<script src="{{ static_url("js/underscore.js") }}"></script>
+<script src="{{ static_url("js/backbone.js") }}"></script>
+<script src={{ static_url("js/submit_form.js") }}></script>
+<script src="{{ static_url("js/image_backbone.js") }}"></script>
+<script>
+    {#    识别上传的照片 #}
+    $('#add-file').click(function () {
+        $('#add-photo-modal').modal('show');
+    });
+
+    {#$('#image-browser').change(function () {#}
+    {#    $('#upload-image-file').submit();#}
+    {# });#}
+
+    $('#upload_image').click(function () {
+        var Pic = document.getElementById("canvas").toDataURL("image/png");
+        Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
+        let data = Pic;
+        let full_data = {
+            'data': data,
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/feature_recognition',
+            data: JSON.stringify(full_data),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            beforeSend: function () {
+                $('#waiting-modal').modal('show');
+            }
+        }).done(function (data, message) {
+            $('#waiting-modal').modal('hide');
+
+            let gender;
+            if (data['gender'] === 'M') {
+                gender = '男'
+            } else {
+                gender = '女'
+            }
+            $('#modal-age').html("你的年龄应该为:" + data['age'] + "岁");
+            $('#modal-sex').html("你的性别为:" + gender);
+            $('#reco_modal').modal('show');
+            {#console.log(data['age']);#}
+            {#console.log(message);#}
+            {#    完成上传 #}
+            let age = data['age'];
+            console.log('this is gender', gender);
+            let imag_url = `<img src='/showimage?age=${age}&gender=${gender}'>`;
+            console.log(imag_url);
+            $('#canvas').replaceWith(imag_url);
+            $('#upload_image').hide();
+        }).fail(function (data, message) {
+            console.log(data);
+            console.log(message);
+        });
+    });
+
+    function snap() {
+        {# 初始化canvas #}
+        $('#canvas-img').html('<canvas id="canvas" width="480" height="400"' +
+            ' name="snapshot" class="mb-0"></canvas>\n');
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        var video = document.getElementById("video");
+        context.drawImage(video, 0, 0, video.width, video.height);
+        $('#upload_image').show();
+    }
+
+    {##}
+    {#function client_camera() {#}
+    {#    // Grab elements, create settings, etc.#}
+    {#    var video = document.getElementById('video');#}
+    {#    // Get access to the camera!#}
+    {#    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {#}
+    {#        // Not adding `{ audio: true }` since we only want video now#}
+    {#        navigator.mediaDevices.getUserMedia({#}
+    {#            video: true#}
+    {#        }).then(function (stream) {#}
+    {#            video.src = window.URL.createObjectURL(stream);#}
+    {#            video.srcObject = stream;#}
+    {#            video.play();#}
+    {#        });#}
+    {#    }#}
+    {# }#}
+    {##}
+    {#client_camera();#}
+    $('#snap').click(snap);
+</script>
+{% end %}
+{% block template %}
+{% end %}

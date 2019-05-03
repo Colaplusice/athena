@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="video-content">
+        <div class="row">
+            <div class="col-md-6 offset-3">
+                <div class="img-fluid">
+                    <img src="/video_stream?fd=true" width="480" height="400" alt="">
+                </div>
+                <div>
+                    <button class="btn btn-lg" hidden id="recongize-img">人脸识别</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-4 col-md-12 video-button">
+                <div id="message">
+                    <div class="">
+                        {% if current_user %}
+                        <button id="snapshot">采集照片</button>
+                        {% end %}
+                        {#                        {% if current_user.is_authenticated %}#}
+                        {#                              <form class="form-inlivne" action="/receive_image" method="post" enctype=multipart/form-data>#}
+                        {#                            <label class="custom-file-label">#}
+                        {#                                Browse <input type="file" hidden>#}
+                        {#                            </label>#}
+                        {#                              </form>#}
+                        {#                        {% else %}#}
+                        {#                        <button id="upload_recognition">实时识别</button>#}
+                        {#                        {% end %}#}
+                        {#                        <button id="ajax">ajax</button>#}
+                        {#                        <button id="progress">显示进度</button>#}
+                    </div>
+                    <div id="video_message_p"></div>
+                    <p id="reco_label"></p>
+                    <div class="modal fade" id="reco_result" tabindex="-1" role="dialog"
+                         aria-labelledby="exampleModalLabel"
+                         aria-hidden="true">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block script %}
+<script src="{{ static_url("js/underscore.js") }}"></script>
+<script src="{{ static_url("js/backbone.js") }}"></script>
+<script src="{{ static_url("js/image_backbone.js") }}"></script>
+<script>
+
+    function client_camera() {
+        // Grab elements, create settings, etc.
+        var video = document.getElementById('video');
+        // Get access to the camera!
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Not adding `{ audio: true }` since we only want video now
+            navigator.mediaDevices.getUserMedia({
+                video: true
+            }).then(function (stream) {
+                //video.src = window.URL.createObjectURL(stream);
+                video.srcObject = stream;
+                video.play();
+            });
+        }
+    }
+</script>
+
+{% end %}
+
+{% block template %}
+{#    <script id="videoMessage" type="text/template">#}
+{#        <div class="card">#}
+{#            <div class="card-body">#}
+{#                <p>video_face_num: <%= face_number %></p>#}
+{#                <p>video_face_num: <%= people_name %></p>#}
+{#            </div>#}
+{#        </div>#}
+{#    </script>#}
+<script id="reco-modal" type="text/template">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">识别结果</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="reco-name">识别结果: <%- username %></p>
+                <p id="likely-hood">相似度: <%- likely_percent %></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</script>
+{% end %}

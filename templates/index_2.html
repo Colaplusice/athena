@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% block css %}
+        <link rel="stylesheet" href=" {{ url_for("static",filename="css/bootstrap.min.css") }} ">
+        <link rel="stylesheet" href=" {{ url_for("static",filename="css/tether.min.css") }}">
+        <link rel="stylesheet" href=" {{ url_for("static",filename="css/my.css") }}">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    {% endblock %}
+</head>
+<body>
+{% block navbar %}
+    <nav class="navbar navbar-expand-md bg-dark border-bottom">
+
+        <a href="{{ url_for('main.index') }}" class="navbar-brand">
+            <h2> face recognation
+                <i class="fa fa-user"> </i>
+
+            </h2>
+        </a>
+        <!--收缩按钮-->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!--收缩-->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active"><a class="nav-link" href="{{ url_for("main.real_recognition") }}">实时识别</a>
+                </li>
+                <li class="nav-item active"><a class="nav-link" href="">信息检测</a></li>
+                <li class="nav-item active"><a class="nav-link" href="">特征检测</a></li>
+                {% if not current_user.is_authenticated %}
+                    </ul>
+                    <a class="nav-link " href="{{ url_for('main.login') }}">login</a>
+                {% else %}
+                    <a href="{{ url_for('main.logout') }}" class="nav-link">logout</a>
+                {% endif %}
+        </div>
+    </nav>
+{% endblock %}
+{% block modal %}
+    <div class="modal" id="modalLoginForm">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">login</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="{{ url_for("main.login") }}">
+                    <div class="modal-body mx-3">
+                        <div class="md-form mb-5">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="username" id="defaultForm-username" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-email">Your username</label>
+                        </div>
+                        <div class="md-form mb-4">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" id="defaultForm-pass" class="form-control validate">
+                            <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center">
+                        <button type="submit" class="btn btn-default">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block flash %}
+    {% for message in get_flashed_messages() %}
+        <div class="offset-3 col-md-6 alert alert-info">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endblock %}
+{% block content %}
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for("static",filename="js/jquery.min.js") }}"></script>
+    <script src="{{ url_for("static",filename="js/tether.min.js") }}"></script>
+    <script src="{{ url_for("static",filename="js/bootstrap.min.js") }}"></script>
+    <script src="{{ url_for("static",filename="js/add_css.js") }}"></script>
+{% endblock %}
+{% block template %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<style>
+    .user-profile {
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: row;
+    }
+
+    .user-profile img {
+        width: 200px;
+        height: 100%;
+        padding: 10px;
+        margin-right: 20px;
+    }
+
+    .user-profile img:hover {
+        border: 1px solid #a5a5a5;
+    }
+
+    .user-profile .user-info h4 {
+        color: #a5a5a5;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    .img-list {
+        min-height: 600px;
+    }
+
+    .image-img object {
+        max-height: 300px;
+        width: 100%;
+    }
+
+    .image-info {
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+    }
+
+    .image-meta {
+        padding: 20px;
+        margin-top: auto;
+        font-size: 16px;
+        color: #a5a5a5;
+    }
+    .image-meta .image-text{
+        margin-bottom: 10px;
+    }
+</style>
+{% end %}
+{% block content %}
+<div class="container">
+    <div class="user-profile">
+        <img class="float-left img-thumbnail"
+             src="/static/file/upload/fanjialiang2401ICe/29660460.jpeg" alt="">
+        <div class="user-info">
+            <h4>姓名: {{ current_user.name }}</h4>
+            <h4>邮箱:{{ current_user.email }} </h4>
+            <h4>个人简介: 这是一个很懒的人....什么也没有留下 </h4>
+            <h4>图片数: 0</h4>
+        </div>
+    </div>
+    <div class="img-list">
+        <h2 class="h2 mt-4 mb-4 text-center">照片信息</h2>
+        <div class="row">
+            {% if len(user_messages)==0 %}
+            <h2 class="error-message">空空如也</h2>
+            {% end %}
+            {% for user_message in user_messages %}
+            <div class="col-md-4">
+                <div class="bg-light image-info">
+                    <div class="image-img">
+                        <object class="img-fluid" data="{{ user_message['file_path'] }}" type="image/png">
+                            <img class="img-fluid" src="https://appharbor.com/assets/images/stackoverflow-logo.png"
+                                 alt="example">
+                        </object>
+                    </div>
+                    <div class="image-meta">
+                        <div class="image-text">
+                              <p class="text">拍摄日期: {{ user_message['create_at'] }}</p>
+                        <p class="text">编号:{{ user_message['id'] }}</p>
+                        <p class="text">用户名:{{ user_message['user_name'] }}</p>
+                        </div>
+
+                        <button class="btn btn-block btn-info">删除</button>
+                    </div>
+                </div>
+            </div>
+            {% end %}
+        </div>
+    </div>
+</div>
+{% end %}

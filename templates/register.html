@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="page-wrapper bg-dark p-t-100 p-b-50">
+    <div class="wrapper wrapper--w900">
+        <div class="card card-6">
+            <div class="card-heading">
+                <h2 class="title">register</h2>
+            </div>
+            <div class="card-body">
+                <form action="{{ reverse_url("register") }}" method="POST"  enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="name">用户名</div>
+                        <div class="value">
+                            <input class="input--style-6" type="text" name="username" placeholder="username">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">密码</div>
+                        <div class="value">
+                            <input class="input--style-6" type="password" required="required" name="password" placeholder="password">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="name">邮箱</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <input class="input--style-6" type="email" name="email"
+                                       placeholder="example@email.com">
+                            </div>
+                        </div>
+                    </div>
+                    {#                        <div class="form-row">#}
+                    {#                            <div class="name">Message</div>#}
+                    {#                            <div class="value">#}
+                    {#                                <div class="input-group">#}
+                    {#                                    <textarea class="textarea--style-6" name="message"#}
+                    {#                                              placeholder="a funny person"></textarea>#}
+                    {#                                </div>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    <div class="form-row">
+                        <div class="name">Upload CV</div>
+                        <div class="value">
+                            <div class="input-group js-input-file">
+                                <input class="input-file" type="file" name="image" id="file">
+                                <label class="label--file" for="file">Choose file</label>
+                                <span class="input-file-info">No file chosen</span>
+                            </div>
+                            <div class="label--desc">Upload your photo for recognize template, or you can take photo
+                                later
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn--radius-2 btn--blue-2" type="submit">Signup</button>
+                        <a class="btn btn--radius-2 btn--blue-2 float-right" href="{{ reverse_url('login') }}">have a
+                            account ? login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href=" {{ static_url("css/bootstrap.min.css") }} ">
+    <link rel="stylesheet" href=" {{ static_url("css/tether.min.css") }} ">
+    <link rel="stylesheet" href=" {{ static_url("css/my.css") }} ">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+    {% block css %}
+    {#    for custom css#}
+    {% end %}
+</head>
+<body>
+{% block navbar %}
+<nav class="navbar navbar-expand-md  border-bottom">
+
+    <div class="container">
+        <a href="{{ reverse_url('index') }}" class="navbar-brand">
+            <h2><i class="fa fa-camera"> </i> 人脸识别系统</h2>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!--收缩-->
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active"><a class="nav-link" href="/feature_recognition">特征检测</a></li>
+                <li class="nav-item active"><a id="add_photo" class="nav-link" href="/add_database">信息录入</a></li>
+                <li class="nav-item active"><a class="nav-link" href="/real_time">实时识别</a></li>
+                {% if current_user %}
+                <li class="nav-item active"><a class="nav-link" href="/profile">我的信息</a></li>
+                {% end %}
+            </ul>
+            {% if current_user %}
+            <a class="nav-link" href="/logout">注销</a>
+            {% else %}
+            <a class="nav-link" href="/login">登录</a>
+            {% end %}
+        </div>
+
+    </div>
+
+    <!--收缩按钮-->
+</nav>
+{% end %}
+{% block message %}
+{% if "message" in globals() %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-push-1 col-md-9">
+            <div class="alert alert-warning" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
+{% end %}
+
+{% block modal %}
+{% end %}
+
+{% block content %}
+{% end %}
+
+{% block template %}
+{% end %}
+
+{% block underscore_template %}
+{% end %}
+
+
+<script src="{{ static_url("js/jquery.min.js") }}"></script>
+<script src="{{ static_url("js/tether.min.js") }}"></script>
+<script src="{{ static_url("js/bootstrap.min.js") }}"></script>
+<script src="{{ static_url("js/add_css.js") }}"></script>
+
+{% block script %}
+{% end %}
+
+{% block footer %}
+<footer class="footer">
+    <div class="footer-info"></div>
+    <a href="#" class="">返回顶部</a>
+</footer>
+{% end %}
+
+</body>
+</html>
