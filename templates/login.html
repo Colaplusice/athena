@@ -1,39 +1,73 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="page-wrapper bg-dark p-t-100 p-b-50">
-        <div class="wrapper wrapper--w900">
-            <div class="card card-6">
-                <div class="card-heading">
-                    <h2 class="title">login</h2>
-                </div>
-                <div class="card-body">
-                    <form action="{{ reverse_url("login") }}" method="POST">
-                        <div class="form-row">
-                            <div class="name">Username</div>
-                            <div class="value">
-                                <input class="input--style-6" type="text" placeholder="enter your username" name="username" required="required">
+    <div class="form-config">
+    <div class="container">
+        <div class="row">
+            <div class="offset-3 col-md-6">
+                <h2 class="form-title">用户登录</h2>
+                <form action="/" action="{{ reverse_url("login") }}" class="">
+                    <div class="form-group">
+                        <label for="username">用户名:</label>
+                        <input type="text" class="form-control" name="username" id="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码:</label>
+                        <input type="password" class="form-control" name="password" id="password">
+                    </div>
+                    <div class="form-group mt-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a class="btn btn-info" href="/register">创建新账号</a>
+                            </div>
+                            <div class="col-md-6">
+                                <button class="btn btn-info btn-block" href="/login">登录</button>
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="name">Password</div>
-                            <div class="value">
-                                <div class="input-group">
-                                    <input class="input--style-6" type="password" name="password"
-                                           placeholder="enter your password" required="required">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn--radius-2 btn--blue-2" type="submit">login</button>
-                            <a href="{{ reverse_url("register") }}" class="btn btn--radius-2 btn--blue-2 float-right">register</a>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-    <!-- Jquery JS-->
-    {% block script %}
-        <script src="../static/js/submit_form.js"></script>
-    {% end %}
+</div>
+<div class="login-form">
+    <form action="" class="">
+    </form>
+</div>
+
+{#    <div class="page-wrapper bg-dark p-t-100 p-b-50">#}
+{#        <div class="wrapper wrapper--w900">#}
+{#            <div class="card card-6">#}
+{#                <div class="card-heading">#}
+{#                    <h2 class="title">login</h2>#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                    <form  method="POST">#}
+{#                        <div class="form-row">#}
+{#                            <div class="name">Username</div>#}
+{#                            <div class="value">#}
+{#                                <input class="input--style-6" type="text" placeholder="enter your username" name="username" required="required">#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="form-row">#}
+{#                            <div class="name">Password</div>#}
+{#                            <div class="value">#}
+{#                                <div class="input-group">#}
+{#                                    <input class="input--style-6" type="password" name="password"#}
+{#                                           placeholder="enter your password" required="required">#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="card-footer">#}
+{#                            <button class="btn btn--radius-2 btn--blue-2" type="submit">login</button>#}
+{#                            <a href="{{ reverse_url("register") }}" class="btn btn--radius-2 btn--blue-2 float-right">register</a>#}
+{#                        </div>#}
+{#                    </form>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+<!-- Jquery JS-->
+{% block script %}
+<script src="../static/js/submit_form.js"></script>
+{% end %}
 {% end %}

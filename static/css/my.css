@@ -10,11 +10,31 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 400;
 }
 
+/* 表格的 title */
+
+.form-config {
+    margin-top: 50px;
+}
+
+.form-config .form-title {
+    margin-bottom: 50px;
+}
+
+.form-config label {
+    font-size: 20px;
+}
+
+
+/* 模板template 消息 */
+.content {
+    min-height: 500px;
+}
+
 .error-message {
     text-align: center;
     display: inline-block;
     margin-left: auto;
-    margin-right:  auto;
+    margin-right: auto;
     color: #a5a5a5;
     margin-top: 20px;
 }
@@ -244,14 +264,6 @@ fieldset {
     /* [1] */
     border: 0;
 }
-
-/* ==========================================================================
-   #PAGE WRAPPER
-   ========================================================================== */
-.page-wrapper {
-    min-height: 100vh;
-}
-
 
 /* ==========================================================================
    #BACKGROUND

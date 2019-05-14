@@ -47,7 +47,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">识别结果</h5>
+                <h5 class="modal-title text-dark">识别结果</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -61,38 +61,6 @@
             </div>
         </div>
     </div>
-
-
-</div>
-
-<div class="modal" id="login-modal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">login</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form method="post" action="{{ reverse_url("index") }}">
-                <div class="modal-body mx-3">
-                    <div class="md-form mb-5">
-                        <i class="fas fa-user"></i>
-                        <input type="text" name="username" id="defaultForm-username" class="form-control validate">
-                        <label data-error="wrong" data-success="right" for="defaultForm-email">Your username</label>
-                    </div>
-                    <div class="md-form mb-4">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" name="password" id="defaultForm-pass" class="form-control validate">
-                        <label data-error="wrong" data-success="right" for="defaultForm-pass">Your password</label>
-                    </div>
-                </div>
-                <div class="modal-footer d-flex justify-content-center">
-                    <button type="submit" class="btn btn-default">登录</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 
 {# waiting modal #}
@@ -104,8 +72,6 @@
         </div>
     </div>
 </div>
-
-
 {% end %}
 
 {% block content %}
@@ -125,143 +91,139 @@
                         <button class="btn btn-primary btn-block" id="snap">拍照检测</button>
                     </div>
                     <div class="col-8">
-                        <form action="" class="form-inline js-input-file" id="upload-image-file">
+                        <form action="" class="form-inline form-check form-input-file'" id="upload-image-file">
                             <input class="input-file" type="file" name="image" id="file">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label class="btn btn-info btn-block" id="upload-file" for="file">图片检测</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="input-file-info" for="file">还未选中文件</label>
-                                </div>
-                                {#                                <div class="col-md-4">#}
-                                {#                                    <button class="btn btn-info btn-block">提交</button>#}
-                                {#                                </div>#}
+                            <div class=" form-group">
+                                <label class="btn btn-block btn-info" id="upload-file" for="file">图片检测</label>
+                            </div>
+                            <div class="form-group ml-4">
+                                <label class="input-file-info" for="file">还未选中文件</label>
                             </div>
                         </form>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-5 col-md-12 offset-1">
-                <div class="img-fluid" id="canvas-img">
-                    <canvas id="canvas" width="480" height="400" name="snapshot" class="mb-0"></canvas>
                 </div>
-                <button class="btn btn-primary"
-                        style="display: none; text-align: center; margin-left: auto; margin-right: auto; margin-top: 30px;"
-                        id="upload_image">上传识别
-                </button>
+                <div class="col-lg-5 col-md-12 offset-1">
+                    <div class="img-fluid" id="canvas-img">
+                        <canvas id="canvas" width="480" height="400" name="snapshot" class="mb-0"></canvas>
+                    </div>
+                    <button class="btn btn-primary"
+                            style="display: none; text-align: center; margin-left: auto; margin-right: auto; margin-top: 30px;"
+                            id="upload_image">上传识别
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-{% end %}
+    </div>
+    {% end %}
 
-{% block script %}
-<script src="{{ static_url("js/underscore.js") }}"></script>
-<script src="{{ static_url("js/backbone.js") }}"></script>
-<script src={{ static_url("js/submit_form.js") }}></script>
-{#<script src="{{ static_url("js/image_backbone.js") }}"></script>#}
-<script>
-    {#$('#login-modal').modal('show');#}
+    {% block script %}
+    <script src="{{ static_url("js/underscore.js") }}"></script>
+    <script src="{{ static_url("js/backbone.js") }}"></script>
+    <script src={{ static_url("js/submit_form.js") }}></script>
+    {#<script src="{{ static_url("js/image_backbone.js") }}"></script>#}
+    <script>
+        {#$('#login-modal').modal('show');#}
 
 
-    {#        ajax 上传文件 #}
-    $('#upload-image-file').submit(function (e) {
-        e.preventDefault();
-        var form_data = new FormData(this);
-        $.ajax({
-            type: "POST",
-            url: '/recognize',
-            data: form_data,
-            cache: false,
-            contentType: false,
-            processData: false,
-        }).done(function (code, message) {
-            console.log('this is age' + code['age']);
-            console.log('this is message' + message);
-        }).fail(function (error, message) {
-            alert(error);
-            console.log(message);
-        });
-    });
-    $('#image-browser').change(function () {
-        $('#upload-image-file').submit();
-    });
-
-    $('#upload_image').click(function () {
-        var Pic = document.getElementById("canvas").toDataURL("image/png");
-        Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
-        let data = Pic;
-        let full_data = {
-            'data': data,
-        };
-        $.ajax({
-            type: 'POST',
-            url: '/feature_recognition',
-            data: JSON.stringify(full_data),
-            contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
-            beforeSend: function () {
-                $('#waiting-modal').modal('show');
-            }
-        }).done(function (data, message) {
-            $('#waiting-modal').modal('hide');
-
-            let gender;
-            if (data['gender'] === 'M') {
-                gender = '男'
-            } else {
-                gender = '女'
-            }
-            $('#modal-age').html("你的年龄应该为:" + data['age'] + "岁");
-            $('#modal-sex').html("你的性别为:" + gender);
-            $('#reco_modal').modal('show');
-            {#console.log(data['age']);#}
-            {#console.log(message);#}
-            {#    完成上传 #}
-            let age = data['age'];
-            console.log('this is gender', gender);
-            let imag_url = `<img src='/showimage?age=${age}&gender=${gender}'>`;
-            console.log(imag_url);
-            $('#canvas').replaceWith(imag_url);
-            $('#upload_image').hide();
-        }).fail(function (data, message) {
-            console.log(data);
-            console.log(message);
-        });
-    });
-
-    function snap() {
-        {# 初始化canvas #}
-        $('#canvas-img').html('<canvas id="canvas" width="480" height="400"' +
-            ' name="snapshot" class="mb-0"></canvas>\n');
-        var canvas = document.getElementById("canvas");
-        var context = canvas.getContext("2d");
-        var video = document.getElementById("video");
-        context.drawImage(video, 0, 0, video.width, video.height);
-        $('#upload_image').show();
-    }
-
-    function client_camera() {
-        // Grab elements, create settings, etc.
-        var video = document.getElementById('video');
-        // Get access to the camera!
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            // Not adding `{ audio: true }` since we only want video now
-            navigator.mediaDevices.getUserMedia({
-                video: true
-            }).then(function (stream) {
-                //video.src = window.URL.createObjectURL(stream);
-                video.srcObject = stream;
-                video.play();
+        {#        ajax 上传文件 #}
+        $('#upload-image-file').submit(function (e) {
+            e.preventDefault();
+            var form_data = new FormData(this);
+            $.ajax({
+                type: "POST",
+                url: '/recognize',
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+            }).done(function (code, message) {
+                console.log('this is age' + code['age']);
+                console.log('this is message' + message);
+            }).fail(function (error, message) {
+                alert(error);
+                console.log(message);
             });
+        });
+        $('#image-browser').change(function () {
+            $('#upload-image-file').submit();
+        });
+
+        $('#upload_image').click(function () {
+            var Pic = document.getElementById("canvas").toDataURL("image/png");
+            Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
+            let data = Pic;
+            let full_data = {
+                'data': data,
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/feature_recognition',
+                data: JSON.stringify(full_data),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#waiting-modal').modal('show');
+                }
+            }).done(function (data, message) {
+                $('#waiting-modal').modal('hide');
+
+                let gender;
+                if (data['gender'] === 'M') {
+                    gender = '男'
+                } else {
+                    gender = '女'
+                }
+                $('#modal-age').html("你的年龄应该为:" + data['age'] + "岁");
+                $('#modal-sex').html("你的性别为:" + gender);
+                $('#reco_modal').modal('show');
+                {#console.log(data['age']);#}
+                {#console.log(message);#}
+                {#    完成上传 #}
+                let age = data['age'];
+                console.log('this is gender', gender);
+                let imag_url = `<img src='/showimage?age=${age}&gender=${gender}'>`;
+                console.log(imag_url);
+                $('#canvas').replaceWith(imag_url);
+                $('#upload_image').hide();
+            }).fail(function (data, message) {
+                console.log(data);
+                console.log(message);
+            });
+        });
+
+        function snap() {
+            {# 初始化canvas #}
+            $('#canvas-img').html('<canvas id="canvas" width="480" height="400"' +
+                ' name="snapshot" class="mb-0"></canvas>\n');
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+            var video = document.getElementById("video");
+            context.drawImage(video, 0, 0, video.width, video.height);
+            $('#upload_image').show();
         }
-    }
 
-    client_camera();
-    $('#snap').click(snap);
+        function client_camera() {
+            // Grab elements, create settings, etc.
+            var video = document.getElementById('video');
+            // Get access to the camera!
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // Not adding `{ audio: true }` since we only want video now
+                navigator.mediaDevices.getUserMedia({
+                    video: true
+                }).then(function (stream) {
+                    //video.src = window.URL.createObjectURL(stream);
+                    video.srcObject = stream;
+                    video.play();
+                });
+            }
+        }
 
-</script>
-{% end %}
-{% block template %}
-{% end %}
+        client_camera();
+        $('#snap').click(snap);
+
+    </script>
+    {% end %}
+    {% block template %}
+    {% end %}

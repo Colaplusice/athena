@@ -6,10 +6,12 @@ import time
 
 import cv2
 import numpy as np
+import oss2
 import tornado.ioloop
 from playhouse.shortcuts import model_to_dict
 from tornado import gen, web, httpclient, httpserver
 from tornado.web import url, RequestHandler, Application
+from utils.faceswap import merge
 
 from camera import MacCamera
 from models import database, User, encode_user, UserImage
@@ -80,6 +82,7 @@ def make_app():
                 name="feature_recognition",
             ),
             url("/add_people", AddPeopleHandler, name="add_people"),
+            url("/face_merge", FaceMergeHandler, name="face_merge"),
         ],
         **settings
     )
@@ -120,10 +123,7 @@ class RegisterHandler(BaseHandler):
 
 class RecognizeHandler(BaseHandler):
     def post(self, *args, **kwargs):
-        image_name = self.get_body_argument(
-            'image_name',
-            default=None
-        )
+        image_name = self.get_body_argument("image_name", default=None)
         if image_name:
             image = guess_name(image_name)
         else:
@@ -165,8 +165,8 @@ class LoginHandler(BaseHandler):
         password = self.get_body_argument("password")
         user = (
             User.select()
-                .where(User.password == password, User.name == username)
-                .first()
+            .where(User.password == password, User.name == username)
+            .first()
         )
         if user is not None:
             self.set_cookie("_id", encode_user(username, password))
@@ -289,7 +289,9 @@ class StreamVideoHandler(web.RequestHandler):
 
 class RealTimeHandler(BaseHandler):
     def get(self, *args, **kwargs):
-        self.render("server_camera.html")
+        pass
+
+            # self.render("server_camera.html")
 
 
 class SnapshotHandler(BaseHandler):
@@ -331,6 +333,50 @@ class FeatureRecognitionHandler(BaseHandler):
             writer.write(file_stream)
         result = guess_age_and_sex(file_name)
         self.write(json.dumps(result))
+
+
+auth = oss2.Auth("LTAIA21kRoVgFGeD", "qrsTxcohl0kyouN9XWujOKULu5SUMR")
+service = oss2.Service(auth, "oss-cn-beijing.aliyuncs.com")
+import datetime
+import random
+
+
+# # 上传图片文件到OSS上，返回网络路径，上传完之后删除本地的文件
+def uploadFileToOSS(output_file):
+    bucket = oss2.Bucket(auth, "oss-cn-beijing.aliyuncs.com", "icecola")
+    file_url = "https://icecola.oss-cn-beijing.aliyuncs.com"
+    fileName = (
+        "timecamera/result_image/"
+        + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        + "_"
+        + str(random.randint(0, 9))
+        + ".png"
+    )
+    bucket.put_object_from_file(fileName, output_file)
+    if os.path.exists(output_file):
+        # 删除文件
+        os.remove(output_file)
+    return file_url + fileName
+
+
+class FaceMergeHandler(RequestHandler):
+    def get(self, *args, **kwargs):
+        self.render("face_merge.html")
+
+    def post(self):
+        try:
+            # 显示照片
+            src_image = self.request.files["src_image"][0]["body"]
+            # 待融合照片
+            merge_image = self.request.files["dst_image"][0]["body"]
+        except KeyError:
+            self.write("not image")
+            return
+        src_img = cv2.imdecode(np.fromstring(src_image, np.uint8), 1)
+        merge_img = cv2.imdecode(np.fromstring(merge_image, np.uint8), 1)
+        image_name = merge(src_img, merge_img)
+        image_path = uploadFileToOSS(image_name)
+        self.write(image_path)
 
 
 if __name__ == "__main__":

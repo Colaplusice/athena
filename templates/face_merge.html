@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block css %}
+<style>
+    .recognize-upload button {
+        padding: 10px;
+        height: 50px;
+        width: 50%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .recognize-upload form {
+        width: 100% !important;
+    }
+
+    .input-files:focus + label,
+    .input-files + label:hover {
+        background: #1b1b1b;
+    }
+
+    .feature-title {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    {# waitting modal#}
+    .bd-example-modal-lg .modal-dialog {
+        display: table;
+        position: relative;
+        margin: 0 auto;
+        top: calc(50% - 24px);
+    }
+
+    .bd-example-modal-lg .modal-dialog .modal-content {
+        background-color: transparent;
+        border: none;
+    }
+
+
+    .image-reco input {
+        max-height: 250px;
+    }
+
+    .image-reco a {
+        color: #ff8c00;
+        text-decoration: none;
+    }
+
+    .image-reco a:hover {
+        color: #58aeff;
+    }
+
+</style>
+{% end %}
+
+{% block content %}
+<div class="container">
+    <h2 class="feature-title">人脸融合</h2>
+
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form action="">
+                <div class="form-group">
+                    <input type="file" name="src_image">
+                </div>
+                <div class="form-group">
+                    <input type="file" name="dst_image" class="form-control-file">
+                </div>
+                <button class="btn btn-info" name="button">submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% end %}
+{# ugly code for trigger backbone #}
+{% block script %}
+<script src="{{ static_url("js/underscore.js") }}"></script>
+<script src="{{ static_url("js/backbone.js") }}"></script>
+<script src={{ static_url("js/submit_form.js") }}></script>
+<script src="{{ static_url("js/image_backbone.js") }}"></script>
+{% end %}
+{% block template %}
+{% end %}

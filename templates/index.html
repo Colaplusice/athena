@@ -78,6 +78,7 @@
     .feature-introduce {
         margin-top: 30px;
     }
+
 </style>
 {% end %}
 
@@ -222,8 +223,10 @@
                                         <form action="/recognize" method="post" enctype="multipart/form-data"
                                               class="form-input-file form-submit-file">
                                             <div class="image-reco">
-                                                <input alt="demo picture" type="image" src="{{ ( each_image ) }}" class="img-fluid" name="image">
-                                                <input type="text" name="image_name" value="{{ each_image }}" class="d-none">
+                                                <input alt="demo picture" type="image" src="{{ ( each_image ) }}"
+                                                       class="img-fluid" name="image">
+                                                <input type="text" name="image_name" value="{{ each_image }}"
+                                                       class="d-none">
                                                 <button type="submit" class="btn btn--red">使用这张照片</button>
                                             </div>
 
@@ -252,7 +255,8 @@
                         <h4 style="margin-left: -20px"> 请选择一张照片</h4>
                     </div>
                     <div class="row mb-2">
-                        <form action="/recognize" class="form-inline form-input-file form-submit-file" id="select-image-recognize"
+                        <form action="/recognize" class="form-inline form-input-file form-submit-file"
+                              id="select-image-recognize"
                               enctype="multipart/form-data">
                             <input class="input-file" type="file" name="image" id="file">
                             <label class="btn btn-info btn-block input-file-info" id="reco-file"
@@ -284,12 +288,20 @@
     <div class="recognize-photo">
         <div class="container">
             <div class="row">
-                <div class="offset-3">
+                <div class="offset-3 col-6">
                     <img src="<%= image %> " alt="">
-                    <p class="offset-2 mt-4"> Sorry if we didn’t quite get it right - we are still improving this
-                        feature..
+                    <p class="mt-4">
+                        对不起，如果结果不准确，请见谅!
                     </p>
-                    <a href="/" class="col-md-3 offset-4 btn btn--red">试试其他照片</a>
+                    <div class="row mt-4">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6 offset-3">
+                                    <a href="/" class="btn btn-block btn--red">试试其他照片</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
