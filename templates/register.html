@@ -22,8 +22,8 @@
                     </div>
                     <div class="form-group">
                         <label>上传头像</label>
-                            <input class="input-file form-control" type="file" name="image" id="image">
-                            <label for="add-image" class="input-file-info label-info text-dark ml-3">还未选择文件(可选)</label>
+                        <input class="input-file form-control" type="file" name="image" id="image">
+                        <label for="add-image" class="input-file-info label-info text-dark ml-3">还未选择文件(可选)</label>
                     </div>
                     <div class="form-group">
                         <label for="">说点什么吧</label>
@@ -44,4 +44,7 @@
         </div>
     </div>
 </div>
+{% end %}
+{% block script %}
+<script src="../static/js/submit_form.js"></script>
 {% end %}
