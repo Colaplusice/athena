@@ -1,3 +1,4 @@
+/*global*/
 body {
     font-family: "Open Sans", "Arial", "Helvetica Neue", sans-serif;
     font-weight: 400;
@@ -9,6 +10,13 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-weight: 400;
 }
+
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
 
 /* 表格的 title */
 
@@ -25,7 +33,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-/* 模板template 消息 */
+/* underscore 模板template 消息 */
 .content {
     min-height: 500px;
 }
@@ -39,14 +47,11 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 20px;
 }
 
+/* nav 导航栏 */
+
 nav a {
     margin-left: 30px;
     font-size: 20px;
-}
-
-a {
-    color: white;
-    text-decoration: none;
 }
 
 .tag-btn {
@@ -83,6 +88,71 @@ a {
 
 #remember {
     margin-top: 15px;
+}
+
+.recognize-upload button {
+    padding: 10px;
+    height: 50px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.recognize-upload form {
+    width: 100% !important;
+}
+
+.input-files:focus + label,
+.input-files + label:hover {
+    background: #1b1b1b;
+}
+
+.feature-title {
+    /*text-align: center;*/
+    margin: 30px 0;
+}
+
+
+/*modal*/
+.bd-example-modal-lg .modal-dialog {
+    display: table;
+    position: relative;
+    margin: 0 auto;
+    top: calc(50% - 24px);
+}
+
+.bd-example-modal-lg .modal-dialog .modal-content {
+    background-color: transparent;
+    border: none;
+}
+
+
+.image-reco {
+    background-color: white;
+    padding: 10px;
+    color: #ff8c00;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.image-reco {
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.image-reco input {
+    max-height: 250px;
+}
+
+.image-reco a {
+    color: #ff8c00;
+    text-decoration: none;
+}
+
+.image-reco a:hover {
+    color: #58aeff;
 }
 
 

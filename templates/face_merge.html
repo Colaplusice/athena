@@ -1,83 +1,87 @@
 {% extends "base.html" %}
-{% block css %}
-<style>
-    .recognize-upload button {
-        padding: 10px;
-        height: 50px;
-        width: 50%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .recognize-upload form {
-        width: 100% !important;
-    }
-
-    .input-files:focus + label,
-    .input-files + label:hover {
-        background: #1b1b1b;
-    }
-
-    .feature-title {
-        text-align: center;
-        margin: 30px 0;
-    }
-
-    {# waitting modal#}
-    .bd-example-modal-lg .modal-dialog {
-        display: table;
-        position: relative;
-        margin: 0 auto;
-        top: calc(50% - 24px);
-    }
-
-    .bd-example-modal-lg .modal-dialog .modal-content {
-        background-color: transparent;
-        border: none;
-    }
-
-
-    .image-reco input {
-        max-height: 250px;
-    }
-
-    .image-reco a {
-        color: #ff8c00;
-        text-decoration: none;
-    }
-
-    .image-reco a:hover {
-        color: #58aeff;
-    }
-
-</style>
-{% end %}
 
 {% block content %}
-<div class="container">
-    <h2 class="feature-title">人脸融合</h2>
 
-    <div class="row">
-        <div class="col-6 offset-3">
-            <form action="">
-                <div class="form-group">
-                    <input type="file" name="src_image">
+<div class="video-content">
+    <div class="container">
+        <h2 class="feature-title text-center">人脸融合</h2>
+        <div class="row">
+            <div class="col-md-8">
+                <div id="main_window">
+                    <div class="row">
+                        <div class="col-md-7 offset-5">
+                            <div class="row mb-2">
+                                <form action="/face_merge" class="form-inline form-input-file form-submit-file"
+                                      id="select-image-recognize"
+                                      enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <input class="input-file" type="file" name="base_image" id="base_image">
+                                            <label class="btn btn-info btn-block input-file-info mb-4"
+                                                   id="base_image_info"
+                                                   for="base_image">选择基准照片</label>
+                                            <img src="#" alt="" class="img-fluid" id="base-image">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input class="input-file" type="file" name="merge_image" id="merge_image">
+                                            <label class="btn btn--red btn-block input-file-info mb-4"
+                                                   id="merge_image_info"
+                                                   for="merge_image">选择融合照片</label>
+                                            <img src="#" alt="" class="img-fluid" id="merge-image">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-block btn-info mt-4">提交</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <input type="file" name="dst_image" class="form-control-file">
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-dark">
+                    <div class="card-title">
+                        <h2>人脸融合</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-text">
+                            <div class="card-text">
+                                <p class="">
+                                    人脸融合主要功能为将两张照片融合生成为一张新的照片，
+                                    先选择一张基准照片，然后将自己想要融合的照片添加进去，
+                                    就可以生成一张新的照片~
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-info" name="button">submit</button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
+{#    <div class="container">#}
+{#    <h2 class="feature-title">人脸融合</h2>#}
+{##}
+{#    #}
+{#    <div class="row">#}
+{#        <div class="col-6 offset-3">#}
+{#            <form action="">#}
+{#                <div class="form-group">#}
+{#                    <input type="file" name="src_image" class="form-control">#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <input type="file" name="dst_image" class="form-control">#}
+{#                </div>#}
+{#                <button class="btn btn-info" name="button">submit</button>#}
+{#            </form>#}
+{#        </div>#}
+{#    </div>#}
+{#    </div>#}
 {% end %}
-{# ugly code for trigger backbone #}
 {% block script %}
-<script src="{{ static_url("js/underscore.js") }}"></script>
-<script src="{{ static_url("js/backbone.js") }}"></script>
-<script src={{ static_url("js/submit_form.js") }}></script>
-<script src="{{ static_url("js/image_backbone.js") }}"></script>
+<script src={{ static_url("js/merge_form.js") }}></script>
+
+
 {% end %}
 {% block template %}
 {% end %}
