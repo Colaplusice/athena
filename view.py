@@ -111,7 +111,6 @@ class RegisterHandler(BaseHandler):
         user, _created = User.get_or_create(
             name=username, defaults={"password": password, "email": email}
         )
-
         if not _created:
             self.render("register.html", message="用户名或邮箱重复")
         if self.request.files.get("image"):
@@ -165,8 +164,8 @@ class LoginHandler(BaseHandler):
         password = self.get_body_argument("password")
         user = (
             User.select()
-            .where(User.password == password, User.name == username)
-            .first()
+                .where(User.password == password, User.name == username)
+                .first()
         )
         if user is not None:
             self.set_cookie("_id", encode_user(username, password))
@@ -345,7 +344,7 @@ def uploadFileToOSS(output_file):
     bucket = oss2.Bucket(auth, "oss-cn-beijing.aliyuncs.com", "icecola")
     file_url = "https://icecola.oss-cn-beijing.aliyuncs.com"
     fileName = (
-        "merge_image/" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + ".png"
+            "merge_image/" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S") + ".png"
     )
     bucket.put_object_from_file(fileName, output_file)
     if os.path.exists(output_file):
