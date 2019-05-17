@@ -33,6 +33,7 @@ def select_demo_path():
         if len(temp_list) == 5:
             path_list.append(temp_list)
             temp_list = []
+    print('path list path:', len(path_list))
     return path_list
 
 
@@ -83,6 +84,7 @@ def make_app():
             ),
             url("/add_people", AddPeopleHandler, name="add_people"),
             url("/face_merge", FaceMergeHandler, name="face_merge"),
+            url("/user_image_delete", UserImageDeleteHandler, name="user_image_delete"),
         ],
         **settings
     )
@@ -98,6 +100,13 @@ class LogoutHandler(BaseHandler):
 class MainHandler(BaseHandler):
     def get(self):
         self.render("index.html", image_list=select_demo_path())
+
+
+class UserImageDeleteHandler(BaseHandler):
+    def get(self, *args, **kwargs):
+        user_image_id = self.get_argument('user_image_id')
+        UserImage.delete_by_id(user_image_id)
+        self.redirect('/profile')
 
 
 class RegisterHandler(BaseHandler):
@@ -219,7 +228,7 @@ class AddDatabaseHandler(BaseHandler):
             # from form
             file_stream = self.request.files["image"][0]["body"]
             filename = self.request.files["image"][0]["filename"]
-            name = self.get_body_argument("username")
+            name = self.get_body_argument("username", default=self.current_user.name)
 
         else:
             # from client camera
@@ -227,7 +236,7 @@ class AddDatabaseHandler(BaseHandler):
             file_stream = base64.decodebytes(body["data"].encode("utf-8"))
             filename = "snapshot_{}.png".format(time.time())
         save_user_image(name or self.current_user.name, filename, file_stream)
-        self.write("添加成功!")
+        self.write("success!")
 
 
 class AddPeopleHandler(RequestHandler):
@@ -288,6 +297,7 @@ class StreamVideoHandler(web.RequestHandler):
 
 class RealTimeHandler(BaseHandler):
     def get(self, *args, **kwargs):
+        self.render('real_time.html')
         pass
 
         # self.render("server_camera.html")
@@ -312,6 +322,7 @@ class ProfileHandler(BaseHandler):
         user_messages = [
             model_to_dict(user_image, recurse=False) for user_image in user_images
         ]
+
         self.render("profile.html", user_messages=user_messages)
 
 

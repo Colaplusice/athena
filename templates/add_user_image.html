@@ -135,8 +135,8 @@
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
         }).done(function (data, message) {
-            alert("添加成功");
             {#    完成上传 #}
+            alert(data);
             $('#upload_image').hide();
         }).fail(function (data, message) {
             console.log(data);
@@ -170,7 +170,6 @@
             });
         }
     }
-
     client_camera();
     $('#snap').click(snap);
 

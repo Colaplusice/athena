@@ -47,7 +47,8 @@
         font-size: 16px;
         color: #a5a5a5;
     }
-    .image-meta .image-text{
+
+    .image-meta .image-text {
         margin-bottom: 10px;
     }
 </style>
@@ -56,12 +57,12 @@
 <div class="container">
     <div class="user-profile">
         <img class="float-left img-thumbnail"
-             src="/static/file/upload/fanjialiang2401ICe/29660460.jpeg" alt="">
+             src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&f=y&size=160" alt="">
         <div class="user-info">
             <h4>姓名: {{ current_user.name }}</h4>
             <h4>邮箱:{{ current_user.email }} </h4>
             <h4>个人简介: 这是一个很懒的人....什么也没有留下 </h4>
-            <h4>图片数: 0</h4>
+            <h4>图片数: {{ len(user_messages) }}</h4>
         </div>
     </div>
     <div class="img-list">
@@ -81,12 +82,11 @@
                     </div>
                     <div class="image-meta">
                         <div class="image-text">
-                              <p class="text">拍摄日期: {{ user_message['create_at'] }}</p>
-                        <p class="text">编号:{{ user_message['id'] }}</p>
-                        <p class="text">用户名:{{ user_message['user_name'] }}</p>
+                            <p class="text">拍摄日期: {{ user_message['create_at'] }}</p>
+                            <p class="text">编号:{{ user_message['id'] }}</p>
+                            <p class="text">用户名:{{ user_message['user_name'] }}</p>
                         </div>
-
-                        <button class="btn btn-block btn-info">删除</button>
+                        <a class="btn btn-block btn-info" href="/user_image_delete?user_image_id={{ user_message['id'] }}">删除</a>
                     </div>
                 </div>
             </div>

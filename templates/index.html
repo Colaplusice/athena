@@ -176,8 +176,30 @@
                 <div class="col-md-10">
                     <div id="bs4-multi-slide-carousel" class="carousel slide">
                         <div class="carousel-inner">
-                            {% for group in image_list %}
+
                             <div class="carousel-item active">
+                                <div class="row">
+                                    {% for each_image in image_list[0] %}
+                                    <div class="col">
+                                        <form action="/recognize" method="post" enctype="multipart/form-data"
+                                              class="form-input-file form-submit-file">
+                                            <div class="image-reco">
+                                                <input alt="demo picture" type="image" src="{{ ( each_image ) }}"
+                                                       class="img-fluid" name="image">
+                                                <input type="text" name="image_name" value="{{ each_image }}"
+                                                       class="d-none">
+                                                <button type="submit" class="btn btn--red">使用这张照片</button>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                    {% end %}
+                                </div>
+                            </div>
+
+
+                            {% for group in image_list[1:] %}
+                            <div class="carousel-item">
                                 <div class="row">
                                     {% for each_image in group %}
                                     <div class="col">
@@ -190,7 +212,6 @@
                                                        class="d-none">
                                                 <button type="submit" class="btn btn--red">使用这张照片</button>
                                             </div>
-
                                         </form>
                                     </div>
                                     {% end %}
@@ -279,11 +300,6 @@
     $('#add-file').click(function () {
         $('#add-photo-modal').modal('show');
     });
-
-    {#$('#image-browser').change(function () {#}
-    {#    $('#upload-image-file').submit();#}
-    {# });#}
-
     $('#upload_image').click(function () {
         var Pic = document.getElementById("canvas").toDataURL("image/png");
         Pic = Pic.replace(/^data:image\/(png|jpg);base64,/, "");
