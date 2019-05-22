@@ -130,7 +130,7 @@ def make_multi_crop_batch(filename, coder):
     image_buffer: string, JPEG encoding of RGB image.
     """
     # Read the image file.
-    print('tf read',filename)
+    print('tf read', filename)
     with tf.gfile.FastGFile(filename, "rb") as f:
         image_data = f.read()
 

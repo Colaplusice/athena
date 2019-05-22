@@ -52,8 +52,8 @@ def _activation_summary(x):
     tf.summary.scalar(tensor_name + "/sparsity", tf.nn.zero_fraction(x))
 
 
+# nlables 代码
 def inception_v3(nlabels, images, pkeep, is_training):
-    print("enter0")
     batch_norm_params = {
         "is_training": is_training,
         "trainable": True,
@@ -78,8 +78,8 @@ def inception_v3(nlabels, images, pkeep, is_training):
                 weights_regularizer=weights_regularizer,
                 trainable=True,
         ):
-            print("enter1")
             with tf.contrib.slim.arg_scope(
+                    # 卷积层
                     [tf.contrib.slim.conv2d],
                     weights_initializer=tf.truncated_normal_initializer(stddev=stddev),
                     activation_fn=tf.nn.relu,
@@ -87,18 +87,21 @@ def inception_v3(nlabels, images, pkeep, is_training):
                     normalizer_params=batch_norm_params,
             ):
                 net, end_points = inception_v3_base(images, scope=scope)
-                print('enter2')
                 # 变量 需要对变量进行区分
                 index = str(time.time())[-4:]
                 with tf.variable_scope("logits_{}".format(index)):
                     shape = net.get_shape()
+                    # 池化
                     net = avg_pool2d(net, shape[1:3], padding="VALID", scope="pool")
+                    # 随机丢弃一部分内容
                     net = tf.nn.dropout(net, pkeep, name="droplast")
+                    #
                     net = flatten(net, scope="flatten")
     with tf.variable_scope("output") as scope:
         weights = tf.Variable(
             tf.truncated_normal([2048, nlabels], mean=0.0, stddev=0.01), name="weights"
         )
+        # 加偏差
         biases = tf.Variable(
             tf.constant(0.0, shape=[nlabels], dtype=tf.float32), name="biases"
         )

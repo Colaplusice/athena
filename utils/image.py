@@ -99,10 +99,10 @@ def guess_name(image, detection_method="cnn"):
         #     name = max(counts, key=counts.get)
         # names.append(name)
     for ((top, right, bottom, left), name) in zip(boxes, names):
-        cv2.rectangle(image, (left, top), (right, bottom), (255, 0, 255), 1)
+        cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 1)
         y = top - 15 if top - 15 > 15 else top + 15
         cv2.putText(
-            image, str(name), (left, y), cv2.FONT_HERSHEY_SIMPLEX, 0.785, (255, 0, 255), 1
+            image, str(name), (left, y), cv2.FONT_HERSHEY_SIMPLEX, 0.785, (0, 255, 0), 4
         )
     return image
 
