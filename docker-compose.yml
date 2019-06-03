@@ -1,0 +1,28 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx/
+    ports:
+      - 80:80
+    depends_on:
+      - video_camera
+  db:
+    image: postgres:9.4
+    volumes:
+      - /data/postgresql/data:/lib/postgresql/data
+    restart: always
+    env_file:
+      - env/psql.env
+    command: bash -c "psql video_camera < ./video_camera.sql"
+  video_camera:
+    depends_on:
+      - db
+    build: .
+    image: video_camera:latest
+    restart: always
+    environment:
+      DB_HOST: db
+    command: bash -c "./boot.sh run"

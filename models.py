@@ -7,7 +7,7 @@ from playhouse.postgres_ext import JSONField
 from playhouse.postgres_ext import PostgresqlExtDatabase
 
 database = PostgresqlExtDatabase(
-    database="athena", user="fjl2401", host="127.0.0.1", port="5432",
+    database="video_camera", user="fjl2401", host="127.0.0.1", port="5432",
     autocommit=True, autorollback=True
 )
 

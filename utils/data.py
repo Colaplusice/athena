@@ -2,12 +2,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from datetime import datetime
 import os
-import numpy as np
-import tensorflow as tf
-
 from distutils.version import LooseVersion
+
+import tensorflow as tf
 
 VERSION_GTE_0_12_0 = LooseVersion(tf.__version__) >= LooseVersion("0.12.0")
 

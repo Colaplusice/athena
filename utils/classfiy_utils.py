@@ -14,7 +14,6 @@ RESIZE_AOI = 256
 RESIZE_FINAL = 227
 
 
-# Modifed from here
 # http://stackoverflow.com/questions/3160699/python-progress-bar#3160819
 class ProgressBar(object):
     DEFAULT = "Progress: %(bar)s %(percent)3d%%"
@@ -94,7 +93,7 @@ def _is_png(filename):
 
 
 def make_multi_image_batch(filenames, coder):
-    """Process a multi-image batch, each with a single-look
+    """处理一批图像，每张图片具有一个人脸
     Args:
     filenames: list of paths
     coder: instance of ImageCoder to provide TensorFlow image coding utils.
@@ -122,14 +121,13 @@ def make_multi_image_batch(filenames, coder):
 
 
 def make_multi_crop_batch(filename, coder):
-    """Process a single image file.
+    """处理单个图像文件.
     Args:
     filename: string, path to an image file e.g., '/path/to/example.JPG'.
     coder: instance of ImageCoder to provide TensorFlow image coding utils.
     Returns:
     image_buffer: string, JPEG encoding of RGB image.
     """
-    # Read the image file.
     print('tf read', filename)
     with tf.gfile.FastGFile(filename, "rb") as f:
         image_data = f.read()
@@ -165,6 +163,12 @@ def make_multi_crop_batch(filename, coder):
 
 
 def face_detection_model(model_type, model_path):
+    '''
+    选取 人脸检测的模型
+    :param model_type: 检测类型
+    :param model_path: 模型路径
+    :return:
+    '''
     model_type_lc = model_type.lower()
     if model_type_lc == "yolo_tiny":
         from yolodetect import PersonDetectorYOLOTiny

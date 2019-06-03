@@ -1,12 +1,16 @@
-from detect import ObjectDetector
-
-import dlib
 import cv2
+import dlib
+
+from detect import ObjectDetector
 
 FACE_PAD = 50
 
 
 class FaceDetectorDlib(ObjectDetector):
+    '''
+    通过dlib实现对图片上人脸的矩形的绘制
+    '''
+
     def __init__(self, model_name, basename="frontal-face", tgtdir="."):
         self.tgtdir = tgtdir
         self.basename = basename
@@ -14,7 +18,6 @@ class FaceDetectorDlib(ObjectDetector):
         self.predictor = dlib.shape_predictor(model_name)
 
     def run(self, image_file):
-        print(image_file)
         img = cv2.imread(image_file)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         faces = self.detector(gray, 1)
@@ -52,7 +55,7 @@ class FaceDetectorDlib(ObjectDetector):
             min(img.shape[1], x + w + FACE_PAD),
         ]
         lower_cut = [max(y - FACE_PAD, 0), max(x - FACE_PAD, 0)]
-        roi_color = img[lower_cut[0] : upper_cut[0], lower_cut[1] : upper_cut[1]]
+        roi_color = img[lower_cut[0]: upper_cut[0], lower_cut[1]: upper_cut[1]]
         cv2.imwrite(name, roi_color)
         return name
 

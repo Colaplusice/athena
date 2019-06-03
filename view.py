@@ -389,7 +389,7 @@ class FaceMergeHandler(RequestHandler):
 
 if __name__ == "__main__":
     app = make_app()
-    port = 8888
+    port = 5000
     logging.warning("index:http://localhost:{}".format(port))
     http_server = httpserver.HTTPServer(make_app())
     http_server.listen(port)

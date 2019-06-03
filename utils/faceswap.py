@@ -1,48 +1,3 @@
-#!/usr/bin/python
-
-# Copyright (c) 2015 Matthew Earl
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-#     The above copyright notice and this permission notice shall be included
-#     in all copies or substantial portions of the Software.
-#
-#     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-#     OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-#     MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-#     NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-#     DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-#     OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-#     USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-"""
-This is the code behind the Switching Eds blog post:
-
-    http://matthewearl.github.io/2015/07/28/switching-eds-with-python/
-
-See the above for an explanation of the code below.
-
-To run the script you'll need to install dlib (http://dlib.net) including its
-Python bindings, and OpenCV. You'll also need to obtain the trained model from
-sourceforge:
-
-    http://sourceforge.net/projects/dclib/files/dlib/v18.10/shape_predictor_68_face_landmarks.dat.bz2
-
-Unzip with `bunzip2` and change `PREDICTOR_PATH` to refer to this file. The
-script is run like so:
-
-    ./faceswap.py <head image> <face image>
-
-If successful, a file `output.jpg` will be produced with the facial features
-from `<head image>` replaced with the facial features from `<face image>`.
-
-"""
-
 import cv2
 import dlib
 import numpy
@@ -62,12 +17,12 @@ JAW_POINTS = list(range(0, 17))
 
 # Points used to line up the images.
 ALIGN_POINTS = (
-    LEFT_BROW_POINTS
-    + RIGHT_EYE_POINTS
-    + LEFT_EYE_POINTS
-    + RIGHT_BROW_POINTS
-    + NOSE_POINTS
-    + MOUTH_POINTS
+        LEFT_BROW_POINTS
+        + RIGHT_EYE_POINTS
+        + LEFT_EYE_POINTS
+        + RIGHT_BROW_POINTS
+        + NOSE_POINTS
+        + MOUTH_POINTS
 )
 
 # Points from the second image to overlay on the first. The convex hull of each
@@ -141,17 +96,12 @@ def get_face_mask(im, landmarks):
 
 def transformation_from_points(points1, points2):
     """
+    对两张人脸的特征点矩阵进行普式变化
     Return an affine transformation [s * R | T] such that:
-
         sum ||s*R*p1,i + T - p2,i||^2
-
     is minimized.
-
+     https://en.wikipedia.org/wiki/Orthogonal_Procrustes_problem
     """
-    # Solve the procrustes problem by subtracting centroids, scaling by the
-    # standard deviation, and then using the SVD to calculate the rotation. See
-    # the following for more details:
-    #   https://en.wikipedia.org/wiki/Orthogonal_Procrustes_problem
 
     points1 = points1.astype(numpy.float64)
     points2 = points2.astype(numpy.float64)
@@ -168,10 +118,6 @@ def transformation_from_points(points1, points2):
 
     U, S, Vt = numpy.linalg.svd(points1.T * points2)
 
-    # The R we seek is in fact the transpose of the one given by U * Vt. This
-    # is because the above formulation assumes the matrix goes on the right
-    # (with row vectors) where as our solution requires the matrix to be on the
-    # left (with column vectors).
     R = (U * Vt).T
 
     return numpy.vstack(
@@ -183,6 +129,12 @@ def transformation_from_points(points1, points2):
 
 
 def read_im_and_landmarks(im):
+    '''
+
+    :param im:
+    :return:
+    获取图片的脸部特征值
+    '''
     if isinstance(im, str):
         im = cv2.imread(im, cv2.IMREAD_COLOR)
     im = cv2.resize(im, (im.shape[1] * SCALE_FACTOR, im.shape[0] * SCALE_FACTOR))
@@ -204,6 +156,13 @@ def warp_im(im, M, dshape):
 
 
 def correct_colours(im1, im2, landmarks1):
+    '''
+    进行颜色校正
+    :param im1:
+    :param im2:
+    :param landmarks1:
+    :return:
+    '''
     blur_amount = COLOUR_CORRECT_BLUR_FRAC * numpy.linalg.norm(
         numpy.mean(landmarks1[LEFT_EYE_POINTS], axis=0)
         - numpy.mean(landmarks1[RIGHT_EYE_POINTS], axis=0)
@@ -218,9 +177,9 @@ def correct_colours(im1, im2, landmarks1):
     im2_blur += (128 * (im2_blur <= 1.0)).astype(im2_blur.dtype)
 
     return (
-        im2.astype(numpy.float64)
-        * im1_blur.astype(numpy.float64)
-        / im2_blur.astype(numpy.float64)
+            im2.astype(numpy.float64)
+            * im1_blur.astype(numpy.float64)
+            / im2_blur.astype(numpy.float64)
     )
 
 
