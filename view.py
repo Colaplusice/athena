@@ -338,8 +338,8 @@ class FeatureRecognitionHandler(BaseHandler):
         result = guess_age_and_sex(file_name)
         self.write(json.dumps(result))
 
+from .play import auth
 
-auth = oss2.Auth("LTAIA21kRoVgFGeD", "qrsTxcohl0kyouN9XWujOKULu5SUMR")
 service = oss2.Service(auth, "oss-cn-beijing.aliyuncs.com")
 import datetime
 
