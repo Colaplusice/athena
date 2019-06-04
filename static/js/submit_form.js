@@ -1,5 +1,5 @@
 (function ($) {
-    console.log('submit form');
+    console.log('enter form');
     'use strict';
     /*[ File Input Config ]
         ===========================================================*/
@@ -46,6 +46,7 @@
                             processData: false,
                         }).done(function (code, message) {
                             message_view.show();
+                            console.log('success');
                         }).fail(function (error, message) {
                             console.log('error');
                             alert('出错了'+message);

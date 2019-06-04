@@ -17,7 +17,6 @@ from models import database, User, encode_user, UserImage
 from utils.faceswap import merge
 from utils.image import save_user_image, guess_age_and_sex, add_label, guess_name
 
-cam = MacCamera()
 
 
 def select_demo_path():
@@ -65,7 +64,6 @@ def make_app():
     app = App(
         [
             url(r"/", MainHandler, name="index"),
-            url(r"/play", PlayHandler),
             url("/stream_handler", StreamingIoHandler, name="stream"),
             url("/video_stream", StreamVideoHandler, name="video_stream"),
             url("/login", LoginHandler, name="login"),
@@ -276,6 +274,7 @@ class StreamVideoHandler(web.RequestHandler):
         self.served_image_timestamp = time.time()
         face_detection = self.get_argument("fd")
         my_boundary = "--jpgboundary"
+        cam = MacCamera()
         while True:
             img = cam.get_frame(face_detection)
             interval = 0.1
