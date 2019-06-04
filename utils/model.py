@@ -52,7 +52,6 @@ def _activation_summary(x):
     tf.summary.scalar(tensor_name + "/sparsity", tf.nn.zero_fraction(x))
 
 
-# nlables 代码
 def inception_v3(nlabels, images, pkeep, is_training):
     batch_norm_params = {
         "is_training": is_training,

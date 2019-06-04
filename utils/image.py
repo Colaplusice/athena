@@ -1,7 +1,6 @@
 import base64
 import csv
 import json
-import math
 import os
 
 import cv2
@@ -13,8 +12,6 @@ from models import UserImage
 from .classfiy_utils import (
     ImageCoder,
     make_multi_crop_batch,
-    make_multi_image_batch,
-    ProgressBar,
 )
 from .model import select_model, get_checkpoint
 
@@ -88,16 +85,6 @@ def guess_name(image, detection_method="cnn"):
         names.append(
             data["user_name"][int(max_index)] if distance[max_index] < 0.6 else name
         )
-        # matches = face_recognition.compare_faces(data["embedding_code"], encoding, tolerance=0.8)
-        # if True in matches:
-        #     match_indexs = [index for (index, value) in enumerate(matches) if value]
-        #     counts = defaultdict(int)
-        #     for ind in match_indexs:
-        #         name = data["user_name"][ind]
-        #         counts[name] += 1
-        #     print('this is count',counts)
-        #     name = max(counts, key=counts.get)
-        # names.append(name)
     for ((top, right, bottom, left), name) in zip(boxes, names):
         cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 1)
         y = top - 15 if top - 15 > 15 else top + 15
@@ -111,7 +98,6 @@ def guess_age_and_sex(filename):
     model_type = "inception"
     requested_step = None
     checkpoint = "checkpoint"
-    single_look = False
     device_id = "/cpu:0"
     reco_list = {"age": "model/22801", "gender": "model/21936"}
     results = {}
@@ -138,51 +124,26 @@ def guess_age_and_sex(filename):
                 saver.restore(sess, model_checkpoint_path)
                 softmax_output = tf.nn.softmax(logits)
                 coder = ImageCoder()
-
-                if single_look:
-                    pass
-                    # classify_many_single_crop(
-                    #     sess, label_list, softmax_output, coder, images, image_files
-                    # )
-                else:
-                    results[face_class_type] = classify_one_multi_crop(
-                        sess, label_list, softmax_output, coder, images, filename
-                    )
+                # 删除 single look部分
+                results[face_class_type] = classify_one_multi_crop(
+                    sess, label_list, softmax_output, coder, images, filename
+                )
     return results
-
-
-def classify_many_single_crop(
-        sess, label_list, softmax_output, coder, images, image_files
-):
-    try:
-        num_batches = math.ceil(len(image_files) / MAX_BATCH_SZ)
-        pg = ProgressBar(num_batches)
-        for j in range(num_batches):
-            start_offset = j * MAX_BATCH_SZ
-            end_offset = min((j + 1) * MAX_BATCH_SZ, len(image_files))
-
-            batch_image_files = image_files[start_offset:end_offset]
-            print(start_offset, end_offset, len(batch_image_files))
-            image_batch = make_multi_image_batch(batch_image_files, coder)
-            batch_results = sess.run(
-                softmax_output, feed_dict={images: image_batch.eval()}
-            )
-            batch_sz = batch_results.shape[0]
-            for i in range(batch_sz):
-                output_i = batch_results[i]
-                best_i = np.argmax(output_i)
-                best_choice = (label_list[best_i], output_i[best_i])
-                print("Guess @ 1 %s, prob = %.2f" % best_choice)
-            pg.update()
-        pg.done()
-    except Exception as e:
-        print(e)
-        print("Failed to run all images")
 
 
 def classify_one_multi_crop(
         sess, label_list, softmax_output, coder, images, image_file
 ):
+    '''
+    一张图片，多张人脸
+    :param sess:
+    :param label_list:
+    :param softmax_output:
+    :param coder:
+    :param images:
+    :param image_file:
+    :return:
+    '''
     print("Running file %s" % image_file)
     image_batch = make_multi_crop_batch(image_file, coder)
     batch_results = sess.run(softmax_output, feed_dict={images: image_batch.eval()})

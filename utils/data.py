@@ -60,7 +60,7 @@ def decode_jpeg(image_buffer, scope=None):
 
 
 def distort_image(image, height, width):
-
+    # 对图像进行随机扭曲变化
     # Image processing for training the network. Note the many random
     # distortions applied to the image.
 
@@ -89,14 +89,8 @@ def eval_image(image, height, width):
     return tf.image.resize_images(image, [height, width])
 
 
-def data_normalization(image):
-
-    image = standardize_image(image)
-
-    return image
-
-
 def image_preprocessing(image_buffer, image_size, train, thread_id=0):
+    # 图像预处理
     """Decode and preprocess one image for evaluation or training.
     Args:
     image_buffer: JPEG encoded string Tensor
@@ -111,11 +105,13 @@ def image_preprocessing(image_buffer, image_size, train, thread_id=0):
     image = decode_jpeg(image_buffer)
 
     if train:
+        #
         image = distort_image(image, image_size, image_size)
     else:
+        # 图像宽高处理
         image = eval_image(image, image_size, image_size)
-
-    image = data_normalization(image)
+    # 数据正则化
+    image = standardize_image(image)
     return image
 
 
@@ -136,13 +132,13 @@ def parse_example_proto(example_serialized):
 
 
 def batch_inputs(
-    data_dir,
-    batch_size,
-    image_size,
-    train,
-    num_preprocess_threads=4,
-    num_readers=1,
-    input_queue_memory_factor=16,
+        data_dir,
+        batch_size,
+        image_size,
+        train,
+        num_preprocess_threads=4,
+        num_readers=1,
+        input_queue_memory_factor=16,
 ):
     with tf.name_scope("batch_processing"):
 
@@ -224,7 +220,7 @@ def batch_inputs(
 
 
 def inputs(
-    data_dir, batch_size=128, image_size=227, train=False, num_preprocess_threads=4
+        data_dir, batch_size=128, image_size=227, train=False, num_preprocess_threads=4
 ):
     with tf.device("/cpu:0"):
         images, labels, filenames = batch_inputs(
@@ -239,9 +235,8 @@ def inputs(
 
 
 def distorted_inputs(
-    data_dir, batch_size=128, image_size=227, num_preprocess_threads=4
+        data_dir, batch_size=128, image_size=227, num_preprocess_threads=4
 ):
-
     # Force all input processing onto CPU in order to reserve the GPU for
     # the forward inference and back-propagation.
     with tf.device("/cpu:0"):

@@ -25,4 +25,4 @@ services:
     restart: always
     environment:
       DB_HOST: db
-    command: bash -c "./boot.sh run"
+    command: bash -c "python view.py"

@@ -185,11 +185,6 @@ class LoginHandler(BaseHandler):
         self.render("login.html")
 
 
-class PlayHandler(BaseHandler):
-    def get(self):
-        self.write("HELLO")
-
-
 class StreamingIoHandler(web.RequestHandler):
     def on_chunk(self, chunk):
         self.write("some chunk")
